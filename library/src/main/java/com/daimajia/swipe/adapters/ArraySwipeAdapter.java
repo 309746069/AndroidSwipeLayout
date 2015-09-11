@@ -9,10 +9,11 @@ import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.implments.SwipeItemMangerImpl;
 import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
 import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
+import com.daimajia.swipe.util.Attributes;
 
 import java.util.List;
 
-public abstract class ArraySwipeAdapter<T> extends ArrayAdapter implements SwipeItemMangerInterface,SwipeAdapterInterface {
+public abstract class ArraySwipeAdapter<T> extends ArrayAdapter implements SwipeItemMangerInterface, SwipeAdapterInterface {
 
     private SwipeItemMangerImpl mItemManger = new SwipeItemMangerImpl(this);
     {}
@@ -41,14 +42,14 @@ public abstract class ArraySwipeAdapter<T> extends ArrayAdapter implements Swipe
     }
 
     @Override
+    public void notifyDatasetChanged() {
+        super.notifyDataSetChanged();
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        boolean convertViewIsNull = convertView == null;
         View v = super.getView(position, convertView, parent);
-        if(convertViewIsNull){
-            mItemManger.initialize(v, position);
-        }else{
-            mItemManger.updateConvertView(v, position);
-        }
+        mItemManger.bind(v, position);
         return v;
     }
 
@@ -65,6 +66,11 @@ public abstract class ArraySwipeAdapter<T> extends ArrayAdapter implements Swipe
     @Override
     public void closeAllExcept(SwipeLayout layout) {
         mItemManger.closeAllExcept(layout);
+    }
+
+    @Override
+    public void closeAllItems() {
+        mItemManger.closeAllItems();
     }
 
     @Override
@@ -88,12 +94,12 @@ public abstract class ArraySwipeAdapter<T> extends ArrayAdapter implements Swipe
     }
 
     @Override
-    public SwipeItemMangerImpl.Mode getMode() {
+    public Attributes.Mode getMode() {
         return mItemManger.getMode();
     }
 
     @Override
-    public void setMode(SwipeItemMangerImpl.Mode mode) {
+    public void setMode(Attributes.Mode mode) {
         mItemManger.setMode(mode);
     }
 }

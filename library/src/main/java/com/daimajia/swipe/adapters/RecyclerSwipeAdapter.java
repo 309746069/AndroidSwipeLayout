@@ -1,9 +1,6 @@
 package com.daimajia.swipe.adapters;
 
-import android.content.Context;
-import android.database.Cursor;
-import android.support.v4.widget.SimpleCursorAdapter;
-import android.view.View;
+import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import com.daimajia.swipe.SwipeLayout;
@@ -14,23 +11,19 @@ import com.daimajia.swipe.util.Attributes;
 
 import java.util.List;
 
-public abstract class SimpleCursorSwipeAdapter extends SimpleCursorAdapter implements SwipeItemMangerInterface, SwipeAdapterInterface {
+public abstract class RecyclerSwipeAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> implements SwipeItemMangerInterface, SwipeAdapterInterface {
 
-    private SwipeItemMangerImpl mItemManger = new SwipeItemMangerImpl(this);
-
-    protected SimpleCursorSwipeAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags) {
-        super(context, layout, c, from, to, flags);
-    }
-
-    protected SimpleCursorSwipeAdapter(Context context, int layout, Cursor c, String[] from, int[] to) {
-        super(context, layout, c, from, to);
-    }
+    public SwipeItemMangerImpl mItemManger = new SwipeItemMangerImpl(this);
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View v = super.getView(position, convertView, parent);
-        mItemManger.bind(v, position);
-        return v;
+    public abstract VH onCreateViewHolder(ViewGroup parent, int viewType);
+
+    @Override
+    public abstract void onBindViewHolder(VH viewHolder, final int position);
+
+    @Override
+    public void notifyDatasetChanged() {
+        super.notifyDataSetChanged();
     }
 
     @Override
@@ -46,6 +39,11 @@ public abstract class SimpleCursorSwipeAdapter extends SimpleCursorAdapter imple
     @Override
     public void closeAllExcept(SwipeLayout layout) {
         mItemManger.closeAllExcept(layout);
+    }
+
+    @Override
+    public void closeAllItems() {
+        mItemManger.closeAllItems();
     }
 
     @Override

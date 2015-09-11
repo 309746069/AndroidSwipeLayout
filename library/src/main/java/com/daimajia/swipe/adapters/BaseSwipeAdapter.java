@@ -5,9 +5,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.daimajia.swipe.SwipeLayout;
-import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
 import com.daimajia.swipe.implments.SwipeItemMangerImpl;
+import com.daimajia.swipe.interfaces.SwipeAdapterInterface;
 import com.daimajia.swipe.interfaces.SwipeItemMangerInterface;
+import com.daimajia.swipe.util.Attributes;
 
 import java.util.List;
 
@@ -40,16 +41,19 @@ public abstract class BaseSwipeAdapter extends BaseAdapter implements SwipeItemM
      */
     public abstract void fillValues(int position, View convertView);
 
+    @Override
+    public void notifyDatasetChanged() {
+        super.notifyDataSetChanged();
+    }
+
 
     @Override
     public final View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
         if(v == null){
             v = generateView(position, parent);
-            mItemManger.initialize(v, position);
-        }else{
-            mItemManger.updateConvertView(v, position);
         }
+        mItemManger.bind(v, position);
         fillValues(position, v);
         return v;
     }
@@ -67,6 +71,11 @@ public abstract class BaseSwipeAdapter extends BaseAdapter implements SwipeItemM
     @Override
     public void closeAllExcept(SwipeLayout layout) {
         mItemManger.closeAllExcept(layout);
+    }
+
+    @Override
+    public void closeAllItems() {
+        mItemManger.closeAllItems();
     }
 
     @Override
@@ -90,12 +99,12 @@ public abstract class BaseSwipeAdapter extends BaseAdapter implements SwipeItemM
     }
 
     @Override
-    public SwipeItemMangerImpl.Mode getMode() {
+    public Attributes.Mode getMode() {
         return mItemManger.getMode();
     }
 
     @Override
-    public void setMode(SwipeItemMangerImpl.Mode mode) {
+    public void setMode(Attributes.Mode mode) {
         mItemManger.setMode(mode);
     }
 }
